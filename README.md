@@ -26,7 +26,7 @@
 ## 发布到你自己的 GitHub
 
 本机已 `git init` 并完成首次提交，仓库目录：  
-`/Users/DRLer/cursor/alfred-obsidian-search`
+`/Users/DRLer/Desktop/ob搜索plan/alfred-obsidian-search`
 
 1. 安装并登录 GitHub CLI（仅需一次）：
 
@@ -38,14 +38,14 @@
 2. 在**该目录下**创建公开仓库并推送（仓库名可按需修改；将创建在当前 `gh` 登录账号下）：
 
    ```bash
-   cd /Users/DRLer/cursor/alfred-obsidian-search
+   cd /Users/DRLer/Desktop/ob搜索plan/alfred-obsidian-search
    gh repo create alfred-obsidian-search --public --source=. --remote=origin --push
    ```
 
    若你已在网页上新建空仓库，则：
 
    ```bash
-   cd /Users/DRLer/cursor/alfred-obsidian-search
+   cd /Users/DRLer/Desktop/ob搜索plan/alfred-obsidian-search
    git remote add origin git@github.com:你的GitHub用户名/alfred-obsidian-search.git
    git push -u origin main
    ```

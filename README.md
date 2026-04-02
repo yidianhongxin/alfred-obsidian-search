@@ -35,18 +35,18 @@
    gh auth login
    ```
 
-2. 在**该目录下**创建公开仓库并推送（将 `你的用户名` 换成你的 GitHub 用户名；仓库名可改）：
+2. 在**该目录下**创建公开仓库并推送（仓库名可按需修改；将创建在当前 `gh` 登录账号下）：
 
    ```bash
    cd /Users/DRLer/cursor/alfred-obsidian-search
-   gh repo create 你的用户名/alfred-obsidian-search --public --source=. --remote=origin --push
+   gh repo create alfred-obsidian-search --public --source=. --remote=origin --push
    ```
 
    若你已在网页上新建空仓库，则：
 
    ```bash
    cd /Users/DRLer/cursor/alfred-obsidian-search
-   git remote add origin git@github.com:你的用户名/alfred-obsidian-search.git
+   git remote add origin git@github.com:你的GitHub用户名/alfred-obsidian-search.git
    git push -u origin main
    ```
 

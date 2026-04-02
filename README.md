@@ -23,6 +23,33 @@
 - 本仓库中的路径、库名均为**占位示例**，使用前请在 Alfred 中改为自己的配置。  
 - 请勿在 Issue、讨论或 PR 中粘贴真实库路径、笔记内容、账号等个人信息。
 
+## 发布到你自己的 GitHub
+
+本机已 `git init` 并完成首次提交，仓库目录：  
+`/Users/DRLer/cursor/alfred-obsidian-search`
+
+1. 安装并登录 GitHub CLI（仅需一次）：
+
+   ```bash
+   brew install gh   # 若尚未安装
+   gh auth login
+   ```
+
+2. 在**该目录下**创建公开仓库并推送（将 `你的用户名` 换成你的 GitHub 用户名；仓库名可改）：
+
+   ```bash
+   cd /Users/DRLer/cursor/alfred-obsidian-search
+   gh repo create 你的用户名/alfred-obsidian-search --public --source=. --remote=origin --push
+   ```
+
+   若你已在网页上新建空仓库，则：
+
+   ```bash
+   cd /Users/DRLer/cursor/alfred-obsidian-search
+   git remote add origin git@github.com:你的用户名/alfred-obsidian-search.git
+   git push -u origin main
+   ```
+
 ## 许可
 
 见 [LICENSE](LICENSE)。

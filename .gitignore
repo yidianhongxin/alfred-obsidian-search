@@ -1,0 +1,9 @@
+.DS_Store
+*.pyc
+__pycache__/
+*.swp
+*.swo
+.env
+.env.*
+# 由 package-workflow.sh 从根目录 search.py 复制生成
+alfred-workflow-source/search.py

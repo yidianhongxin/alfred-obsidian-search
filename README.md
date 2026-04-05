@@ -4,6 +4,10 @@
 
 **作者**：121个黑梦（见 Workflow 内 Created By）
 
+## 更新日志
+
+- **v1.0.1**：关键字恢复为 `obs`；空查询列出最近修改笔记；修复 Configuration Builder 与 Environment Variables 中 `VAULT_PATH` 不一致导致库路径错误的问题（发布包内两处默认已对齐为占位路径，导入后请改为你本机路径）。
+
 ## 安装
 
 1. 下载或在本仓库根目录取得 **`Obsidian Search.alfredworkflow`**（ZIP 包），双击导入 Alfred。  

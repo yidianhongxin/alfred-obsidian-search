@@ -5,6 +5,7 @@ Reads VAULT_PATH, VAULT_NAME, USE_PATH_URI, MAX_RESULTS, PREVIEW_HTML from envir
 """
 from __future__ import annotations
 
+import datetime
 import hashlib
 import json
 import os
@@ -20,7 +21,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 # 仅为占位示例；请在 Alfred 环境变量 VAULT_PATH 中改为你的库路径
 DEFAULT_VAULT = "~/Documents/ObsidianVault"
 MAX_DEFAULT = 50
-RECENT_EMPTY_QUERY = 20
+RECENT_EMPTY_QUERY = 25
 
 
 def _vault_path() -> Path:
@@ -279,12 +280,32 @@ def merge_results(
     return ranked[:cap]
 
 
-def item_for_note(vp: Path, note: Path, hint: str) -> dict:
+def _friendly_mtime(p: Path) -> str:
+    try:
+        mt = p.stat().st_mtime
+    except OSError:
+        return ""
+    dt = datetime.datetime.fromtimestamp(mt)
+    now = datetime.datetime.now()
+    diff = now - dt
+    if diff.days == 0:
+        return f"今天 {dt.strftime('%H:%M')}"
+    if diff.days == 1:
+        return f"昨天 {dt.strftime('%H:%M')}"
+    if diff.days < 7:
+        return f"{diff.days}天前"
+    return dt.strftime("%Y-%m-%d")
+
+
+def item_for_note(vp: Path, note: Path, hint: str, show_mtime: bool = False) -> dict:
     rel = note.relative_to(vp).as_posix()
     resolved = note.resolve()
+    subtitle = f"{hint} · {rel}"
+    if show_mtime:
+        subtitle = f"{_friendly_mtime(note)} · {rel}"
     return {
         "title": note.stem,
-        "subtitle": f"{hint} · {rel}",
+        "subtitle": subtitle,
         "arg": build_obsidian_arg(vp, note),
         "quicklookurl": quicklook_url(note),
         "uid": str(resolved),
@@ -319,7 +340,7 @@ def main() -> None:
     if not query:
         recent = recent_notes(vp, RECENT_EMPTY_QUERY)
         items = [
-            item_for_note(vp, p, "最近编辑")
+            item_for_note(vp, p, "最近编辑", show_mtime=True)
             for p in recent
         ]
         if not items:

@@ -9,13 +9,14 @@ Obsidian 搜索（Alfred）
 2. 修改脚本或 plist 后，可在项目根目录执行：
      ./package-workflow.sh
    会同步 search.py 到 alfred-workflow-source/ 并重新打包。
-3. 在 Workflow 编辑界面右上角 [𝒙] → Environment Variables 中检查：
+3. 在 Workflow 中设置库路径：**Configure Workflow…** 与 **Environment Variables** 里的 `VAULT_PATH` 须填成**同一路径**（Alfred 会优先用 Configuration 里的默认值，两者不一致会导致「库目录不存在」）。
+4. 在 Workflow 编辑界面右上角 [𝒙] → Environment Variables 中检查：
    - VAULT_PATH：库根目录（请改为本机路径，勿使用他人示例路径）
    - VAULT_NAME：（可选）Obsidian 左侧显示的库名称。留空则用 VAULT_PATH 的文件夹名。
    - USE_PATH_URI：默认已等价于开启（用 path= 绝对路径打开，避免「Vault not found」）。
      若你坚持用 vault+file 形式，请设为 0 或 vault，并保证 VAULT_NAME 与 Obsidian 左侧库名完全一致。
    - MAX_RESULTS：最多显示条数，默认 50。
-4. 关键字默认 obs（可在 Script Filter 里改）。
+5. 关键字默认 obs（可在 Script Filter 里改）；空查询时列出最近修改的笔记（条数见脚本内 RECENT_EMPTY_QUERY）。
 
 源码与打包
 ----------

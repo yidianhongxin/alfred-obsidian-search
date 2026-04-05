@@ -9,6 +9,7 @@ import datetime
 import hashlib
 import json
 import os
+import unicodedata
 import shutil
 import subprocess
 import sys
@@ -50,22 +51,21 @@ def _use_path_uri() -> bool:
     return raw not in ("0", "false", "no", "vault")
 
 
+def _uri_component(s: str) -> str:
+    """Obsidian URI 查询参数：整段百分号编码（含 / 与 +），避免 + 被当作空格或解析截断。"""
+    t = unicodedata.normalize("NFC", s)
+    return urllib.parse.quote(t, safe="", encoding="utf-8")
+
+
 def build_obsidian_arg(vp: Path, note: Path) -> str:
-    rel = note.relative_to(vp).as_posix()
+    vp_r = vp.resolve()
+    note_r = note.resolve()
+    rel = note_r.relative_to(vp_r).as_posix()
     if _use_path_uri():
         # 使用绝对路径；不依赖 Obsidian 里登记的 vault 名称
-        p = str(note.resolve())
-        return "obsidian://open?" + urllib.parse.urlencode({"path": p})
-    vn = _vault_name(vp)
-    q = urllib.parse.urlencode(
-        {
-            "vault": vn,
-            "file": rel,
-        },
-        quote_via=urllib.parse.quote,
-        safe="/",
-    )
-    return f"obsidian://open?{q}"
+        return f"obsidian://open?path={_uri_component(str(note_r))}"
+    vn = _vault_name(vp_r)
+    return f"obsidian://open?vault={_uri_component(vn)}&file={_uri_component(rel)}"
 
 
 def _preview_mode() -> str:

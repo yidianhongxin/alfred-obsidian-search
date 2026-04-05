@@ -6,6 +6,7 @@
 
 ## 更新日志
 
+- **v1.0.2**：`obsidian://` 参数整段百分号编码（含 `+`、`/` 等）并做路径 NFC 归一化，减少「未找到文件」；README 补充 `obs` 后须加空格、库根与 Obsidian 一致、`USE_PATH_URI=0` 备选等说明。
 - **v1.0.1**：关键字恢复为 `obs`；空查询列出最近修改笔记；修复 Configuration Builder 与 Environment Variables 中 `VAULT_PATH` 不一致导致库路径错误的问题（发布包内两处默认已对齐为占位路径，导入后请改为你本机路径）。
 
 ## 安装

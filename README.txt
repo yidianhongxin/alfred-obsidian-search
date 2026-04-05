@@ -17,6 +17,7 @@ Obsidian 搜索（Alfred）
      若你坚持用 vault+file 形式，请设为 0 或 vault，并保证 VAULT_NAME 与 Obsidian 左侧库名完全一致。
    - MAX_RESULTS：最多显示条数，默认 50。
 5. 关键字默认 obs（可在 Script Filter 里改）；空查询时列出最近修改的笔记（条数见脚本内 RECENT_EMPTY_QUERY）。
+6. 输入 **obs 后必须跟一个空格** 再输入搜索词，才会进入本 Workflow；若只输入 `obs` 无空格，Alfred 会显示系统自带搜索（如 Finder），回车可能用默认 App（如 Ulysses）打开，而不是 Obsidian。
 
 源码与打包
 ----------
@@ -55,6 +56,12 @@ Obsidian 搜索（Alfred）
 --------
 默认：obsidian://open?path=笔记绝对路径（不依赖库在 Obsidian 里的显示名）。
 备选：将 USE_PATH_URI 设为 0，使用 obsidian://open?vault=…&file=…（需 VAULT_NAME 与 Obsidian 中库名一字不差）。
+
+故障排除：Obsidian 提示「未找到文件」
+--------------------------------------
+- **库根路径必须一致**：Alfred 里 `VAULT_PATH` 解析后的文件夹，须与你在 Obsidian 里「打开为库」的**同一目录**（可先对比 Finder 显示简介里的路径；若有 iCloud/别名/符号链接，以「解析后的真实路径」为准）。不一致时，Alfred 能搜到磁盘上的文件，但 Obsidian 会按自己的库根解析相对路径而报错。
+- **路径中含 `+`、`#`、`&` 等**：脚本已对 URI 做完整百分号编码；若仍失败，可在环境变量中将 `USE_PATH_URI` 设为 `0` 并正确填写 `VAULT_NAME` 再试。
+- **确认走的是本 Workflow**：见上文安装第 6 条（`obs` + 空格）。
 
 本地使用
 --------

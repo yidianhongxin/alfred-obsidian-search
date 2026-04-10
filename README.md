@@ -6,13 +6,14 @@
 
 ## 更新日志
 
+- **v1.0.3**：搜索无同名笔记时，结果列表第 2 项提供 **Create "关键词"**，回车在库根目录新建 `.md` 并用 Obsidian 打开（`obsidian://new`）；默认 `VAULT_PATH` 示例为 `~/Obsidian_250614`，其他环境请在 Workflow 环境变量中改为你本机库路径。
 - **v1.0.2**：`obsidian://` 参数整段百分号编码（含 `+`、`/` 等）并做路径 NFC 归一化，减少「未找到文件」；README 补充 `obs` 后须加空格、库根与 Obsidian 一致、`USE_PATH_URI=0` 备选等说明。
 - **v1.0.1**：关键字恢复为 `obs`；空查询列出最近修改笔记；修复 Configuration Builder 与 Environment Variables 中 `VAULT_PATH` 不一致导致库路径错误的问题（发布包内两处默认已对齐为占位路径，导入后请改为你本机路径）。
 
 ## 安装
 
 1. 下载或在本仓库根目录取得 **`Obsidian Search.alfredworkflow`**（ZIP 包），双击导入 Alfred。  
-2. 在 Workflow 环境变量中将 **`VAULT_PATH`** 设为你**本机** Obsidian 库根目录（不要使用仓库里的示例路径）。  
+2. 在 Workflow 环境变量中将 **`VAULT_PATH`** 设为你**本机** Obsidian 库根目录（发布包默认示例为 `~/Obsidian_250614`，若与你的库不一致请修改）。  
 3. 更详细的依赖、预览（QLMarkdown / pandoc）、故障排除见 **[README.txt](README.txt)**。
 
 ## 从源码打包

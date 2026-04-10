@@ -20,7 +20,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 
 # 仅为占位示例；请在 Alfred 环境变量 VAULT_PATH 中改为你的库路径
-DEFAULT_VAULT = "~/Documents/ObsidianVault"
+DEFAULT_VAULT = "~/Obsidian_250614"
 MAX_DEFAULT = 50
 RECENT_EMPTY_QUERY = 25
 
@@ -297,6 +297,34 @@ def _friendly_mtime(p: Path) -> str:
     return dt.strftime("%Y-%m-%d")
 
 
+def build_create_arg(vp: Path, name: str) -> str:
+    """Build obsidian://new URI to create a note in the vault root."""
+    if _use_path_uri():
+        new_path = vp / f"{name}.md"
+        return f"obsidian://new?path={_uri_component(str(new_path))}"
+    vn = _vault_name(vp)
+    return f"obsidian://new?vault={_uri_component(vn)}&name={_uri_component(name)}"
+
+
+def item_for_create(vp: Path, name: str) -> dict:
+    return {
+        "title": f'Create "{name}"',
+        "subtitle": f"在库根目录新建 {name}.md",
+        "arg": build_create_arg(vp, name),
+        "uid": "__create__",
+        "icon": {"type": "fileicon", "path": "/Applications/Obsidian.app"},
+    }
+
+
+def _exact_name_exists(vp: Path, name: str) -> bool:
+    """Check if a note with the exact stem already exists anywhere in the vault."""
+    target = name.lower()
+    for p in iter_markdown(vp):
+        if p.stem.lower() == target:
+            return True
+    return False
+
+
 def item_for_note(vp: Path, note: Path, hint: str, show_mtime: bool = False) -> dict:
     rel = note.relative_to(vp).as_posix()
     resolved = note.resolve()
@@ -371,6 +399,13 @@ def main() -> None:
     for note, pri, _mt in merged:
         hint = "文件名/路径" if pri == 0 else "正文/标签"
         items.append(item_for_note(vp, note, hint))
+
+    if not _exact_name_exists(vp, query):
+        create_item = item_for_create(vp, query)
+        if items:
+            items.insert(1, create_item)
+        else:
+            items.append(create_item)
 
     if not items:
         print(

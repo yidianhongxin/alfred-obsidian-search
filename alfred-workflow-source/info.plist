@@ -23,7 +23,7 @@
 	<key>createdby</key>
 	<string>121个黑梦</string>
 	<key>description</key>
-	<string>按关键字搜索 Obsidian 库（文件名 + 正文/#标签/YAML tags），回车用 Obsidian 打开。空查询列出最近笔记；无同名笔记时可「Create」新建。v1.0.3</string>
+	<string>按关键字搜索 Obsidian 库（文件名 + 正文/#标签/YAML tags），回车用 Obsidian 打开。空查询列出最近笔记；无同名笔记时可「Create」新建；输入 #标签 可在新建时自动写入正文。v1.0.4</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
@@ -252,7 +252,7 @@ VAULT_PATH：库地址；
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>1.0.3</string>
+	<string>1.0.4</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>

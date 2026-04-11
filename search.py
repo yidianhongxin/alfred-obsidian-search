@@ -9,6 +9,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import unicodedata
 import shutil
 import subprocess
@@ -49,6 +50,19 @@ def _use_path_uri() -> bool:
     """默认用 path= 绝对路径打开，避免 vault 显示名/中文名与 URI 不一致导致 Vault not found。"""
     raw = os.environ.get("USE_PATH_URI", "1").strip().lower()
     return raw not in ("0", "false", "no", "vault")
+
+
+def _parse_query_tags(query: str) -> tuple[str, list[str]]:
+    """Split user input into (title, [#tags]).
+
+    E.g. '123  #实验 #测试' → ('123', ['#实验', '#测试'])
+    """
+    tags = re.findall(r'#[\w\-/]+', query)
+    title = query
+    for tag in tags:
+        title = title.replace(tag, '', 1)
+    title = re.sub(r'\s+', ' ', title).strip()
+    return title, tags
 
 
 def _uri_component(s: str) -> str:
@@ -297,20 +311,27 @@ def _friendly_mtime(p: Path) -> str:
     return dt.strftime("%Y-%m-%d")
 
 
-def build_create_arg(vp: Path, name: str) -> str:
-    """Build obsidian://new URI to create a note in the vault root."""
+def build_create_arg(vp: Path, name: str, tags: list[str] | None = None) -> str:
+    """Build obsidian://new URI to create a note in the vault root.
+    Tags are placed after 3 blank lines in the note body."""
     if _use_path_uri():
         new_path = vp / f"{name}.md"
-        return f"obsidian://new?path={_uri_component(str(new_path))}"
-    vn = _vault_name(vp)
-    return f"obsidian://new?vault={_uri_component(vn)}&name={_uri_component(name)}"
+        uri = f"obsidian://new?path={_uri_component(str(new_path))}"
+    else:
+        vn = _vault_name(vp)
+        uri = f"obsidian://new?vault={_uri_component(vn)}&name={_uri_component(name)}"
+    if tags:
+        content = "\n\n\n" + " ".join(tags) + "\n"
+        uri += f"&content={_uri_component(content)}"
+    return uri
 
 
-def item_for_create(vp: Path, name: str) -> dict:
+def item_for_create(vp: Path, name: str, tags: list[str] | None = None) -> dict:
+    tag_hint = f"  标签：{' '.join(tags)}" if tags else ""
     return {
         "title": f'Create "{name}"',
-        "subtitle": f"在库根目录新建 {name}.md",
-        "arg": build_create_arg(vp, name),
+        "subtitle": f"在库根目录新建 {name}.md{tag_hint}",
+        "arg": build_create_arg(vp, name, tags),
         "uid": "__create__",
         "icon": {"type": "fileicon", "path": "/Applications/Obsidian.app"},
     }
@@ -390,9 +411,12 @@ def main() -> None:
             print(json.dumps({"items": items}, ensure_ascii=False))
         return
 
-    q_lower = query.lower()
+    title, tags = _parse_query_tags(query)
+    search_term = title if title else query
+
+    q_lower = search_term.lower()
     name_hits = filename_matches(vp, q_lower)
-    content_hits = content_search(vp, query)
+    content_hits = content_search(vp, search_term)
     merged = merge_results(vp, name_hits, content_hits, cap)
 
     items = []
@@ -400,8 +424,9 @@ def main() -> None:
         hint = "文件名/路径" if pri == 0 else "正文/标签"
         items.append(item_for_note(vp, note, hint))
 
-    if not _exact_name_exists(vp, query):
-        create_item = item_for_create(vp, query)
+    create_name = title if title else query
+    if create_name and not _exact_name_exists(vp, create_name):
+        create_item = item_for_create(vp, create_name, tags or None)
         if items:
             items.insert(1, create_item)
         else:
